@@ -1,4 +1,4 @@
-﻿using GAME.PhotoRanking.Models.PhotoGroupModel;
+﻿using GAME.PhotoRanking.Models.PhotoGroup;
 using GAME.PhotoRanking.Repositories.PhotoGroupsRepository;
 using GAME.PhotoRanking.Services.Domain.PhotoGroupsDomainService;
 using Microsoft.AspNetCore.Http;

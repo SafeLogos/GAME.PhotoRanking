@@ -1,5 +1,5 @@
 ﻿using GAME.PhotoRanking.Models;
-using GAME.PhotoRanking.Models.PhotoGroupModel;
+using GAME.PhotoRanking.Models.PhotoGroup;
 using GAME.PhotoRanking.Models.Photo;
 
 namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository

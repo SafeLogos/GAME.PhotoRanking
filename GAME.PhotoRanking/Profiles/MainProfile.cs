@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using GAME.PhotoRanking.Models.PhotoGroupModel;
+using GAME.PhotoRanking.Models.PhotoGroup;
 using GAME.PhotoRanking.Models.Photo;
 
 namespace GAME.PhotoRanking.Profiles

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using GAME.PhotoRanking.DBContext;
 using GAME.PhotoRanking.Models;
-using GAME.PhotoRanking.Models.PhotoGroupModel;
+using GAME.PhotoRanking.Models.PhotoGroup;
 using GAME.PhotoRanking.Models.Photo;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using GAME.PhotoRanking.Models.RankingGame;
 
 namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
 {
@@ -19,11 +20,11 @@ namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
             {
                 PhotoGroupModel dbModel = _mapper.Map<PhotoGroupModel>(request);
                 dbModel.Photos = new List<PhotoModel>();
-                 _db.PhotoGroups.InsertOne(dbModel);
+                _db.PhotoGroups.InsertOne(dbModel);
                 resp.Data = dbModel;
             });
 
-       
+        
 
         public Task<Response<bool>> Delete(string id) =>
             Response<bool>.DoAsync(async resp =>
@@ -46,7 +47,13 @@ namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
             Response<List<PhotoGroupModel>>.DoAsync(async resp =>
             {
                 var filter = Builders<PhotoGroupModel>.Filter.Where(pg => !pg.IsDeleted);
-                List<PhotoGroupModel> list = _db.PhotoGroups.Find(filter).ToList();
+                List<PhotoGroupModel> list = _db.PhotoGroups.Find(filter).Project(g => new PhotoGroupModel()
+                {
+                    Id = g.Id,
+                    IsDeleted = g.IsDeleted,
+                    Title = g.Title,
+                    Photos = new List<PhotoModel>()
+                }).ToList();
                 resp.Data = list;
             });
 
@@ -70,11 +77,11 @@ namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
                 photoModel.ImageId = imageId;
                 photoModel.Id = ObjectId.GenerateNewId().ToString();
 
-                if(group.Photos == null)
+                if (group.Photos == null)
                     group.Photos = new List<PhotoModel>();
 
-                group.Photos.Add(photoModel); 
-                
+                group.Photos.Add(photoModel);
+
 
                 var filter = Builders<PhotoGroupModel>.Filter.Where(pg => pg.Id == group.Id);
                 _db.PhotoGroups.ReplaceOne(filter, group);

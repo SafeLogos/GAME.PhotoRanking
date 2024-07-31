@@ -3,7 +3,9 @@ using GAME.PhotoRanking.DBContext;
 using GAME.PhotoRanking.Profiles;
 using GAME.PhotoRanking.Repositories.FilesRepository;
 using GAME.PhotoRanking.Repositories.PhotoGroupsRepository;
+using GAME.PhotoRanking.Repositories.RankingGamesRepository;
 using GAME.PhotoRanking.Services.Domain.PhotoGroupsDomainService;
+using GAME.PhotoRanking.Services.Domain.RankingGames;
 
 namespace GAME.PhotoRanking.Extensions
 {
@@ -38,12 +40,14 @@ namespace GAME.PhotoRanking.Extensions
         private static void AddDomainServices(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPhotoGroupsDomainService, PhotoGroupsDomainService>();
+            builder.Services.AddScoped<IRankingGamesDomainService, RankingGamesDomainService>();
         }
 
         private static void AddMongoRepositories(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPhotoGroupsRepository, MongoPhotoGroupsRepository>();
             builder.Services.AddScoped<IFilesRepository, MongoFilesRepository>();
+            builder.Services.AddScoped<IRankingGamesRepository, MongoRankingGamesRepository>();
         }
 
         private static void AddPostgreRepositories(WebApplicationBuilder builder)

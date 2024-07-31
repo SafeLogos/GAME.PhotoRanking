@@ -1,4 +1,4 @@
-﻿namespace GAME.PhotoRanking.Models.PhotoGroupModel
+﻿namespace GAME.PhotoRanking.Models.PhotoGroup
 {
     public class UpdatePhotoGroupRequest
     {

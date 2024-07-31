@@ -1,7 +1,7 @@
 ﻿using GAME.PhotoRanking.Models.Photo;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GAME.PhotoRanking.Models.PhotoGroupModel
+namespace GAME.PhotoRanking.Models.PhotoGroup
 {
     public class PhotoGroupModel
     {
