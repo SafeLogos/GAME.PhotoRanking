@@ -10,6 +10,7 @@ namespace GAME.PhotoRanking.Models.PhotoGroup
         public string Id { get; set; }
 
         public string Title { get; set; }
+        public string Color { get; set; }
         public bool IsDeleted { get; set; }
 
         public List<PhotoModel> Photos { get; set; }

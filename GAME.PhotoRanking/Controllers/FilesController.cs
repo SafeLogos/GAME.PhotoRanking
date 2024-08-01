@@ -30,6 +30,10 @@ namespace GAME.PhotoRanking.Controllers
             var info = (await _repository.GetShortFileInfo(id)).GetResult();
             return File(bytes, info.ContentType, info.FileName);
         }
+
+        [HttpGet("base64/{id}")]
+        public async Task<IActionResult> Base64(string id) =>
+            Ok(await _repository.DownloadBase64(id));
     }
 
 }

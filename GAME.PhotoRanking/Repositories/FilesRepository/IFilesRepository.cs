@@ -9,6 +9,7 @@ namespace GAME.PhotoRanking.Repositories.FilesRepository
     {
         Task<Response<string>> AddFile(IFormFile file);
         Task<Response<byte[]>> GetFileBytes(string id);
+        Task<Response<string>> DownloadBase64(string id);
         Task<Response<GridFSFileInfo<ObjectId>>> GetFullFileInfo(string id);
         Task<Response<ShortFileInfo>> GetShortFileInfo(string id);
 

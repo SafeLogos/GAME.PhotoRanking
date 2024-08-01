@@ -30,7 +30,8 @@ namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
             Response<bool>.DoAsync(async resp =>
             {
                 var filter = Builders<PhotoGroupModel>.Filter.Where(pg => pg.Id == id);
-                _db.PhotoGroups.DeleteOne(filter);
+                var update = Builders<PhotoGroupModel>.Update.Set(g => g.IsDeleted, true);
+                _db.PhotoGroups.UpdateOne(filter, update);
                 resp.Data = true;
             });
 
@@ -52,6 +53,7 @@ namespace GAME.PhotoRanking.Repositories.PhotoGroupsRepository
                     Id = g.Id,
                     IsDeleted = g.IsDeleted,
                     Title = g.Title,
+                    Color = g.Color,
                     Photos = new List<PhotoModel>()
                 }).ToList();
                 resp.Data = list;
