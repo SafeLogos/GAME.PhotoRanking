@@ -21,18 +21,18 @@ namespace GAME.PhotoRanking.Controllers
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAll() =>
-            Ok((await _rankingGamesRepository.GetAll()).GetResult());
+            Ok(await _rankingGamesRepository.GetAll());
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id) =>
-            Ok((await _rankingGamesRepository.GetDetalization(id)).GetResult());
+            Ok(await _rankingGamesRepository.GetDetalization(id));
 
         [HttpPost("start-game/{groupId}")]
         public async Task<IActionResult> Create(string groupId) =>
-            Ok((await _rankingGamesDomainService.StartGame(groupId)).GetResult());
+            Ok(await _rankingGamesDomainService.StartGame(groupId));
 
-        [HttpPost("start-game/{gameId}/{photoId}")]
-        public async Task<IActionResult> StartGame(string gameId, string photoId) =>
-            Ok((await _rankingGamesDomainService.SelectPhoto(gameId, photoId)).GetResult());
+        [HttpPost("select-photo/{gameId}/{photoId}")]
+        public async Task<IActionResult> SelectPhoto(string gameId, string photoId) =>
+            Ok(await _rankingGamesDomainService.SelectPhoto(gameId, photoId));
     }
 }

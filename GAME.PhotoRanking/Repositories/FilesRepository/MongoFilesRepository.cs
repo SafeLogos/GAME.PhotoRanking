@@ -56,7 +56,7 @@ namespace GAME.PhotoRanking.Repositories.FilesRepository
             Response<string>.DoAsync(async resp =>
             {
                 byte[] bytes = (await GetFileBytes(id)).GetResult();
-                Convert.ToBase64String(bytes);
+                resp.Data = Convert.ToBase64String(bytes);
             });
 
         public Task<Response<GridFSFileInfo<ObjectId>>> GetFullFileInfo(string id) =>

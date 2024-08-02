@@ -57,8 +57,8 @@ namespace GAME.PhotoRanking.Services.Domain.RankingGames
                 resp.Data = (await _rankingGamesRepository.UpdateGame(game)).GetResult();
             });
 
-        public Task<Response<RankingGameModel>> StartGame(string groupId) =>
-            Response<RankingGameModel>.DoAsync(async resp =>
+        public Task<Response<string>> StartGame(string groupId) =>
+            Response<string>.DoAsync(async resp =>
             {
                 PhotoGroupModel group = (await _photoGroupsRepository.Get(groupId)).GetResult();
 
@@ -76,7 +76,10 @@ namespace GAME.PhotoRanking.Services.Domain.RankingGames
 
                 RankingLayerModel firstLayer = _createLayer(group.Photos);
 
-                resp.Data = (await _rankingGamesRepository.CreateGame(game)).GetResult();
+                game.Layers.Add(firstLayer);
+
+                RankingGameModel createdGame = (await _rankingGamesRepository.CreateGame(game)).GetResult();
+                resp.Data = createdGame.Id;
             });
 
         private RankingLayerModel _createLayer(List<PhotoModel> challengers)
