@@ -7,6 +7,7 @@ using GAME.PhotoRanking.Repositories.PhotoGroupsRepository;
 using GAME.PhotoRanking.Repositories.RankingGamesRepository;
 using MongoDB.Bson;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace GAME.PhotoRanking.Services.Domain.RankingGames
 {
@@ -39,17 +40,17 @@ namespace GAME.PhotoRanking.Services.Domain.RankingGames
 
                 result.Winner = result.ChallengerA.Id == photoId ? result.ChallengerA : result.ChallengerB;
 
-                if(lastLayer.Finished)
+                if (lastLayer.Finished)
                 {
                     List<PhotoModel> winners = lastLayer.Results.Select(r => r.Winner!).ToList();
-                    if(winners.Count() == 1)
+                    if (winners.Count() == 1)
                     {
                         game.Winner = winners.First();
                         resp.Data = (await _rankingGamesRepository.UpdateGame(game)).GetResult();
                         return;
                     }
 
-                    RankingLayerModel newLayer = _createLayer(winners);
+                    RankingLayerModel newLayer = _createLayer(game, winners);
 
                     game.Layers.Add(newLayer);
                 }
@@ -71,10 +72,11 @@ namespace GAME.PhotoRanking.Services.Domain.RankingGames
                 {
                     Date = DateTime.Now,
                     Group = group,
-                    Layers = new List<RankingLayerModel>()
+                    Layers = new List<RankingLayerModel>(),
+                    RoundsCount = GetRoundsCount(group)
                 };
 
-                RankingLayerModel firstLayer = _createLayer(group.Photos);
+                RankingLayerModel firstLayer = _createLayer(game, group.Photos);
 
                 game.Layers.Add(firstLayer);
 
@@ -82,21 +84,55 @@ namespace GAME.PhotoRanking.Services.Domain.RankingGames
                 resp.Data = createdGame.Id;
             });
 
-        private RankingLayerModel _createLayer(List<PhotoModel> challengers)
+        private int GetRoundsCount(PhotoGroupModel group)
+        {
+            RankingGameModel game = new RankingGameModel()
+            {
+                Group = group,
+                Layers = new List<RankingLayerModel>()
+            };
+
+            List<PhotoModel> challengers = group.Photos.Select(p => p).ToList();
+            do
+            {
+                RankingLayerModel layer = _createLayer(game, challengers);
+                game.Layers.Add(layer);
+
+                challengers = layer.Results.Select(r => r.ChallengerA).ToList();
+                layer.Results.ForEach(r => r.Winner = r.ChallengerA);
+            } while (challengers.Count > 2);
+
+            return game.Layers.Last().Results.Max(r => r.RoundNumber) + 1;
+        }
+
+        private RankingLayerModel _createLayer(RankingGameModel game, List<PhotoModel> challengers)
         {
             RankingLayerModel layer = new RankingLayerModel()
             {
                 Results = new List<RankingResult>()
             };
 
+            challengers = challengers.Shuffle();
+
+            int round = 0;
+
+            if (game.Layers.Count > 0)
+                round = Math.Max(round, game.Layers.Last().Results.Max(r => r.RoundNumber));
+
             for (int i = 0; i < challengers.Count; i += 2)
             {
                 RankingResult result = new RankingResult();
                 result.ChallengerA = challengers[i];
-                if (challengers.Count > i)
+                if (challengers.Count > i + 1)
+                {
                     result.ChallengerB = challengers[i + 1];
+                    result.RoundNumber = ++round;
+                }
                 else
+                {
                     result.ChallengerB = result.Winner = result.ChallengerA;
+                    result.RoundNumber = 0;
+                }
 
                 layer.Results.Add(result);
             }

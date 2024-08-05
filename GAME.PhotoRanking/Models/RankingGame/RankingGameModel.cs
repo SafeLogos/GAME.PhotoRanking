@@ -15,5 +15,7 @@ namespace GAME.PhotoRanking.Models.RankingGame
 
         public List<RankingLayerModel> Layers { get; set; }
         public PhotoModel? Winner { get; set; }
+
+        public int RoundsCount { get; set; }
     }
 }

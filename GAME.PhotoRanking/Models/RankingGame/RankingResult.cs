@@ -7,5 +7,7 @@ namespace GAME.PhotoRanking.Models.RankingGame
         public PhotoModel ChallengerA { get; set; }
         public PhotoModel ChallengerB { get; set; }
         public PhotoModel? Winner { get; set; }
+
+        public int RoundNumber { get; set; }
     }
 }
